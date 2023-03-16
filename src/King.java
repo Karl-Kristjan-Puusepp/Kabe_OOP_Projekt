@@ -1,4 +1,11 @@
-public class King extends Piece{
-    private static char whiteSymbol = '☼';
-    private static char blackSymbol = '✪';
+public class King extends Piece {
+    private char symbol;
+
+    public King(boolean color) {
+        super(color);
+        if (super.isColor())
+            this.symbol = Board.manWhiteSymbol;
+        else this.symbol = Board.manBlackSymbol;
+    }
 }
+

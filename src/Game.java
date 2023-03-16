@@ -1,4 +1,5 @@
 public class Game {
+
     Board gameBoard = new Board(/*TODO*/);
     private boolean isPlayersMove;
 
