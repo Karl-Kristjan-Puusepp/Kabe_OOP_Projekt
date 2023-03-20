@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("       A    B   C   D   E   F   G   H   I   J \n" +
@@ -22,5 +24,13 @@ public class Main {
                 "      -----------------------------------------\n" +
                 "   1  |   |   |   |   |   |   |   |   |   |   |\n" +
                 "      -----------------------------------------  ");
+
+
+
+        Game game = new Game(10);//boardsize prg 10 ainult
+        System.out.println(Arrays.toString(game.stringToIndexArray("1F")));
     }
+
+
+
 }

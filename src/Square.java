@@ -16,10 +16,12 @@ public class Square {
     }
 
     public void clearSquare() {
-        isEmpty=true;
+        isEmpty = true;
     }
 
     public void setSquarePiece(Piece piece) {
         contains = piece;
     }
+
+
 }

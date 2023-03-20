@@ -1,10 +1,29 @@
+import java.util.Scanner;
+
 public class Game {
 
-    Board gameBoard = new Board(/*TODO*/);
-    private boolean isPlayersMove;
+    Board gameBoard;
 
-    public void makeMove (/*laud*/){
-        //TODO
+    public Game(int boardsize) {
+        this.gameBoard = new Board(boardsize);
+    }
+
+    private boolean isPlayersMove;
+    private final char[] col = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+    private final int[] row = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
+    public void makeMove(Board board) {
+        //TODO arvuti käik
+        if (isPlayersMove) {
+            Scanner input = new Scanner(System.in);
+            System.out.println("Valge käik (<valge nupp> <asukoht>): ");
+            String move = input.nextLine();
+
+            String[] args = move.split(" ");
+            int[] selectedPieceLocation = stringToIndexArray(args[0]);
+            int[] destinationLocation = stringToIndexArray(args[1]);
+            //TODO legalmove kontroll
+        }
     }
 
     // kasutajalt küsitakse mis suuruses lauaga mängida
@@ -41,4 +60,50 @@ public class Game {
    1  |   |   |   |   |   |   |   |   |   |   |
       -----------------------------------------
      */
+
+    /**
+     * Teisendab (mängija poolt) antud käsukoordinaadid mängu funktsionaalsele poolele sobivale kujule.
+     * Hetkel ainult töötab tähtedega a-j ja arvudega 1-10.
+     *
+     * @param s Vaadeldav String objekt
+     * @return int[]-tüüpi järjend, kus esimene indeks on malelaua Square[][] järjendi reaindeks ja teine indeks on veeruindeks.
+     */
+    public int[] stringToIndexArray(String s) {
+        int[] indexArr = new int[2];
+        s=s.toLowerCase();
+            String[] temp = s.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); //https://stackoverflow.com/questions/8270784/how-to-split-a-string-between-letters-and-digits-or-between-digits-and-letters
+            if (temp[0].matches("-?\\d+(\\.\\d+)?")) {// kui on arv
+                int n = Integer.parseInt(temp[0]);
+                for (int j = 0; j < row.length; j++) {
+                    if (row[j] == n) {
+                        indexArr[0] = j;
+                        break;
+                    }
+                }
+                for (int j = 0; j < col.length; j++) {
+                    if (col[j] == temp[1].charAt(0)) {
+                        indexArr[1] = j;
+                        break;
+                    }
+
+                }
+            } else {
+                int n = Integer.parseInt(temp[1]);
+                for (int j = 0; j < row.length; j++) {
+                    if (row[j] == n) {
+                        indexArr[0] = j;
+                        break;
+                    }
+                }
+                for (int j = 0; j < col.length; j++) {
+                    if (col[j] == temp[0].charAt(0)) {
+                        indexArr[1] = j;
+                        break;
+                    }
+
+                }
+            }
+
+        return indexArr;
+    }
 }
