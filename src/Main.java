@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("       A    B   C   D   E   F   G   H   I   J \n" +
+       /* System.out.println("       A    B   C   D   E   F   G   H   I   J \n" +
                 "      -----------------------------------------\n" +
                 "   10 |   |   |   |   |   |   |   |   |   |   |\n" +
                 "      -----------------------------------------\n" +
@@ -25,10 +25,22 @@ public class Main {
                 "   1  |   |   |   |   |   |   |   |   |   |   |\n" +
                 "      -----------------------------------------  ");
 
-
+*/
 
         Game game = new Game(10);//boardsize prg 10 ainult
-        System.out.println(Arrays.toString(game.stringToIndexArray("1F")));
+        game.gameBoard.setupBoard();
+        game.gameBoard.printBoard();
+        game.gameBoard.generateLegalMoves(true);
+        game.playPly();
+        game.gameBoard.printBoard();
+        game.playPly();
+        game.gameBoard.printBoard();
+
+        game.playPly();
+        game.gameBoard.printBoard();
+
+        game.playPly();
+        game.gameBoard.printBoard();
     }
 
 

@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Game {
@@ -6,15 +7,17 @@ public class Game {
 
     public Game(int boardsize) {
         this.gameBoard = new Board(boardsize);
+        this.isPlayersMove = true;
     }
 
     private boolean isPlayersMove;
     private final char[] col = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
     private final int[] row = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
-    public void makeMove(Board board) {
-        //TODO arvuti käik
-        if (isPlayersMove) {
+    public void playPly() {
+        boolean moveMade = false;
+        gameBoard.generateLegalMoves(true);
+        while(!moveMade) {
             Scanner input = new Scanner(System.in);
             System.out.println("Valge käik (<valge nupp> <asukoht>): ");
             String move = input.nextLine();
@@ -22,8 +25,26 @@ public class Game {
             String[] args = move.split(" ");
             int[] selectedPieceLocation = stringToIndexArray(args[0]);
             int[] destinationLocation = stringToIndexArray(args[1]);
-            //TODO legalmove kontroll
+            int[] moveAsCoords = {selectedPieceLocation[0], selectedPieceLocation[1], destinationLocation[0], destinationLocation[1]};
+            if (moveAsCoords.length != 4) {
+                System.out.println("Ei ole legaalne käik, proovi uuesti");
+            } else if (gameBoard.isLegalMove(moveAsCoords)) {
+                gameBoard.move(moveAsCoords);
+                moveMade = true;
+                isPlayersMove = false;
+            } else {
+                System.out.println("Ei ole legaalne käik, proovi uuesti");
+            }
         }
+        gameBoard.generateLegalMoves(false);
+        int randomIndex = (int) (Math.random()*gameBoard.legalMoves.size());
+        int[] computerMove = gameBoard.legalMoves.get(randomIndex);
+        while (computerMove.length == 0) {
+            randomIndex = (int) (Math.random() * gameBoard.legalMoves.size());
+            computerMove = gameBoard.legalMoves.get(randomIndex);
+        }
+        gameBoard.move(computerMove);
+
     }
 
     // kasutajalt küsitakse mis suuruses lauaga mängida
@@ -69,6 +90,7 @@ public class Game {
      * @return int[]-tüüpi järjend, kus esimene indeks on malelaua Square[][] järjendi reaindeks ja teine indeks on veeruindeks.
      */
     public int[] stringToIndexArray(String s) {
+        if (s.length() < 2) return new int[]{};
         int[] indexArr = new int[2];
         s=s.toLowerCase();
             String[] temp = s.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)"); //https://stackoverflow.com/questions/8270784/how-to-split-a-string-between-letters-and-digits-or-between-digits-and-letters

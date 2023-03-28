@@ -21,6 +21,7 @@ public class Square {
 
     public void setSquarePiece(Piece piece) {
         contains = piece;
+        isEmpty = false;
     }
 
 

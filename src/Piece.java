@@ -1,4 +1,5 @@
 public abstract class Piece {
+    public String symbol;
     private boolean color; // 1-valge 0-must
 
     public Piece(boolean color) {
