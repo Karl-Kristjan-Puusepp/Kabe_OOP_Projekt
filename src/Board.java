@@ -13,7 +13,7 @@ public class Board {
     }
 
     List<int[]> legalMoves;
-    public static char manWhiteSymbol = 'O'; //ajutine
+    public static char manWhiteSymbol = 'O';
     public static char manBlackSymbol = 'X';
 
     public static char kingWhiteSymbol = '☼';
@@ -49,8 +49,8 @@ public class Board {
     }
 
     public void printBoard() {
-        System.out.println("       A    B   C   D   E   F   G   H   I   J \n" +
-                "      -----------------------------------------");
+        System.out.println("      A    B   C   D   E   F   G   H   I   J \n" +
+                "    -----------------------------------------");
         for (int i = 0; i < boardSize ; i++) {
             String row = "   " + (boardSize - i) + "|" ;
             for (int j = 0; j < boardSize; j++) {
@@ -82,7 +82,7 @@ public class Board {
                     if (checkSquare.getContains().isColor() == whosMove) {
                         if (i != 0 && j != 0) {
                             if (board[i - 1][j - 1].isEmpty())
-                                legalMoves.add(new int[]{i, j, i - 1, j - 1}); // TODO kontroll
+                                legalMoves.add(new int[]{i, j, i - 1, j - 1});
                             else if (board[i - 1][j - 1].getContains().isColor() != whosMove) {
                                 if (i != 1 && j != 1 && board[i - 2][j - 2].isEmpty())
                                     legalMoves.add(new int[]{i, j, i - 2, j - 2});
@@ -135,6 +135,18 @@ public class Board {
         }
     }
 
+    public void generateLegalMoves(boolean whosMove, int[] startSquare) {
+        generateLegalMoves(whosMove);
+        for (int i = 0; i < legalMoves.size(); i++) {
+            if (legalMoves.get(i).length < 4)
+                continue;
+            if (legalMoves.get(i)[0] != startSquare[0] || legalMoves.get(i)[1] != startSquare[1])
+                legalMoves.set(i, new int[]{});
+            else if (Math.abs(legalMoves.get(i)[0]-legalMoves.get(i)[1]) != 2)
+                legalMoves.set(i, new int[]{});
+        }
+    }
+
     public void move(int[] move) {
         int startI = move[0];
         int startJ = move[1];
@@ -156,6 +168,18 @@ public class Board {
         for (int[] legalMove : legalMoves) {
             if (Arrays.equals(legalMove, move))
                 return true;
+        }
+        return false;
+    }
+
+    public boolean isGameOver() {
+        for (Square square : board[0]) {
+            if (square.isEmpty()) continue;
+            if (square.getContains().isColor()) return true;
+        }
+        for (Square square : board[boardSize-1]) {
+            if (square.isEmpty()) continue;
+            if (!square.getContains().isColor()) return true;
         }
         return false;
     }

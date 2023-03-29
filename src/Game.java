@@ -3,21 +3,29 @@ import java.util.Scanner;
 
 public class Game {
 
-    Board gameBoard;
+    public Board gameBoard;
+    private boolean gameOver;
+    private final char[] col = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+    private final int[] row = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
     public Game(int boardsize) {
         this.gameBoard = new Board(boardsize);
-        this.isPlayersMove = true;
+        gameOver = false;
     }
 
-    private boolean isPlayersMove;
-    private final char[] col = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
-    private final int[] row = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    public boolean isGameOver() {
+        return gameOver;
+    }
 
     public void playPly() {
         boolean moveMade = false;
         gameBoard.generateLegalMoves(true);
         while(!moveMade) {
+            if(gameBoard.isGameOver()) {
+                gameOver = true;
+                System.out.println("Game Over");
+                return;
+            }
             Scanner input = new Scanner(System.in);
             System.out.println("Valge käik (<valge nupp> <asukoht>): ");
             String move = input.nextLine();
@@ -30,11 +38,17 @@ public class Game {
                 System.out.println("Ei ole legaalne käik, proovi uuesti");
             } else if (gameBoard.isLegalMove(moveAsCoords)) {
                 gameBoard.move(moveAsCoords);
+                gameBoard.generateLegalMoves(true, destinationLocation);
+                gameBoard.printBoard();
                 moveMade = true;
-                isPlayersMove = false;
+                for (int[] legalMove : gameBoard.legalMoves) {
+                    if(legalMove.length == 4)
+                        moveMade = false;
+                }
             } else {
                 System.out.println("Ei ole legaalne käik, proovi uuesti");
             }
+
         }
         gameBoard.generateLegalMoves(false);
         int randomIndex = (int) (Math.random()*gameBoard.legalMoves.size());
@@ -44,43 +58,9 @@ public class Game {
             computerMove = gameBoard.legalMoves.get(randomIndex);
         }
         gameBoard.move(computerMove);
-
+        gameBoard.printBoard();
+        System.out.println("Computer made the move: " + moveToString(computerMove));
     }
-
-    // kasutajalt küsitakse mis suuruses lauaga mängida
-    // sisestab käigu a la d4-e5
-    // kontrollitakse kas on legaalne, kui pole saadab vittu
-    // (võtmised kohustuslikud, mõni kord saab mitu korda järjest võtta), kui mitu võimalikku võtmist,
-    // näidatakse nuppude koordinaate, mida peab võtma
-    // arvuti teeb vastu suvalise legaalse käigu
-    // mäng jätkub, kuni ühte värvi nuppe enam laual pole
-    // samuti tammide reeglid
-    // lõpus väljastab võitja
-
-    /*
-         A   B   C   D   E   F   G   H   I   J
-      -----------------------------------------
-   10 |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   9  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   8  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   7  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   6  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   5  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   4  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   3  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   2  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-   1  |   |   |   |   |   |   |   |   |   |   |
-      -----------------------------------------
-     */
 
     /**
      * Teisendab (mängija poolt) antud käsukoordinaadid mängu funktsionaalsele poolele sobivale kujule.
@@ -127,5 +107,20 @@ public class Game {
             }
 
         return indexArr;
+    }
+
+    public String moveToString(int[] move) {
+        StringBuilder str = new StringBuilder();
+        char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+        char startCol = letters[move[1]];
+        char endCol = letters[move[3]];
+        int startRow = 10-move[0];
+        int endRow = 10-move[2];
+        str.append(startCol);
+        str.append(startRow);
+        str.append(" ");
+        str.append(endCol);
+        str.append(endRow);
+        return str.toString();
     }
 }
